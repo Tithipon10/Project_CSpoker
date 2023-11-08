@@ -5,12 +5,12 @@ import java.awt.event.ActionListener;
 import javax.swing.border.AbstractBorder;
 
 public class StartScreen {
-    private JFrame startFrame; 
+    private JFrame startFrame;
     private JButton startButton;
     private Image backgroundImage;
 
     public StartScreen() {
-        startFrame = new JFrame("Welcome to CS Poker");  
+        startFrame = new JFrame("Welcome to CS Poker");
         startFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         startFrame.setSize(1200, 900);
 
@@ -19,7 +19,7 @@ public class StartScreen {
         startButton.setForeground(Color.black);
 
         startButton.setPreferredSize(new Dimension(200, 60));
-        startButton.setFont(new Font("Arial", Font.BOLD, 25)); 
+        startButton.setFont(new Font("Arial", Font.BOLD, 25));
         startButton.setFocusPainted(false); // ไม่แสดงขอบเมื่อได้รับโฟกัส
 
         startButton.addActionListener(new ActionListener() {
@@ -30,7 +30,7 @@ public class StartScreen {
             }
         });
 
-        ImageIcon backgroundIcon = new ImageIcon("Picture/BG_startgame.png"); // โหลดภาพพื้นหลังจากไฟล์
+        ImageIcon backgroundIcon = new ImageIcon(getClass().getResource("/Picture/BG_startgame.png")); // โหลดภาพพื้นหลังจากไฟล์
         backgroundImage = backgroundIcon.getImage(); // ดึงภาพพื้นหลังจาก ImageIcon
 
         JPanel panel = new JPanel() {
@@ -50,7 +50,7 @@ public class StartScreen {
 
         startFrame.add(panel); // แสดง panel ใน frame
         startFrame.setVisible(true); // แสดง frame
-    } 
+    }
 
     public static void main(String[] args) {
         new StartScreen();
@@ -110,7 +110,7 @@ class PokerGameGUI {
         updateAIPlayerInfo(false); // ซ่อนไพ่ของ AI
 
         foldButton = new JButton("Fold"); // ปุ่ม Fold
-        betButton = new JButton("Bet"); // ปุ่ม Bet 
+        betButton = new JButton("Bet"); // ปุ่ม Bet
         checkButton = new JButton("Check"); // ปุ่ม Check
         betButton.setVisible(true); // แสดงปุ่ม Bet
         checkButton.setVisible(false); // ซ่อนปุ่ม Check
@@ -136,16 +136,18 @@ class PokerGameGUI {
         betButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String input = JOptionPane.showInputDialog(frame, "Enter your bet amount (10-100):"); // แสดง Input Dialog
+                String input = JOptionPane.showInputDialog(frame, "Enter your bet amount (10-100):"); // แสดง Input
+                                                                                                      // Dialog
 
                 if (input != null && !input.isEmpty()) { // ตรวจสอบว่าผู้เล่นป้อนข้อมูลหรือไม่
                     int betAmount = Integer.parseInt(input); // แปลง String เป็น int
 
                     if (betAmount >= 10 && betAmount <= 100) { // ตรวจสอบว่ามีค่าระหว่าง 10-100 หรือไม่
                         if (!game.hasPlayerChecked()) { // ตรวจสอบว่าผู้เล่นเคย Check หรือยัง
-                            game.addToPot(betAmount);   // เพิ่ม betAmount ใน pot   
-                            game.getPlayer().deductPoints(betAmount);   // หัก betAmount จาก points ของ Player
-                            int aiDecisionAmount = game.getAIPlayer().makeBet(betAmount); // AI จะทำการเดิมพันเท่ากับ betAmount
+                            game.addToPot(betAmount); // เพิ่ม betAmount ใน pot
+                            game.getPlayer().deductPoints(betAmount); // หัก betAmount จาก points ของ Player
+                            int aiDecisionAmount = game.getAIPlayer().makeBet(betAmount); // AI จะทำการเดิมพันเท่ากับ
+                                                                                          // betAmount
                             game.addToPot(aiDecisionAmount); // เพิ่ม aiDecisionAmount ใน pot
                             updateAIPlayerPoints(); // อัปเดต UI
                             updatePlayerPoints(); // อัปเดต UI
@@ -206,12 +208,12 @@ class PokerGameGUI {
                             String winningReason = game.getWinningReason();
 
                             if (winner.equals("Human Player")) {
-                                ImageIcon winnerIcon = new ImageIcon("Picture/Winner.png");
+                                ImageIcon winnerIcon = new ImageIcon(getClass().getResource("Picture/Winner.png"));
                                 JOptionPane.showMessageDialog(frame, winner + " wins with " + winningReason, "Winner",
                                         JOptionPane.INFORMATION_MESSAGE, winnerIcon);
 
                             } else {
-                                ImageIcon GameOverIcon = new ImageIcon("Picture/GameOver.png");
+                                ImageIcon GameOverIcon = new ImageIcon(getClass().getResource("Picture/GameOver.png"));
 
                                 // Custom JOptionPane for Try Again
                                 final JOptionPane optionPane = new JOptionPane(winner + " wins with " + winningReason,
@@ -382,12 +384,16 @@ class PokerGameGUI {
     }
 
     public ImageIcon loadCardImage(Card card) {
-        String baseFolderPath = "Picture/";
-        String rank = card.getRank().replace("+", "_plus");
-        String suit = card.getSuit().toString().toLowerCase();
-        String filePath = baseFolderPath + rank + "_" + suit + ".png";
-        ImageIcon originalIcon = new ImageIcon(filePath);
-        Image resizedImage = originalIcon.getImage().getScaledInstance(130, 160, Image.SCALE_SMOOTH);
-        return new ImageIcon(resizedImage);
-    }
+    String baseFolderPath = "/Picture/";
+    String rank = card.getRank().replace("+", "_plus");
+    String suit = card.getSuit().toString().toLowerCase();
+    String filePath = baseFolderPath + rank + "_" + suit + ".png";
+
+    ImageIcon originalIcon = new ImageIcon(getClass().getResource(filePath));
+
+    // ปรับขนาดรูปภาพ
+    Image resizedImage = originalIcon.getImage().getScaledInstance(130, 160, Image.SCALE_SMOOTH);
+    return new ImageIcon(resizedImage);
+}
+
 }
